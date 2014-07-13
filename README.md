@@ -21,7 +21,7 @@ This calendar lacks showing national holidays, appointment scheduling and conver
 
 Releases
 ---
-You can get the Windows executable that doesn't have additional dependencies and doesn't need installation from this repo's Releases (look at the "Releases" link at the top, or click [Here](https://github.com/hossein/PersianCalendar/releases/tag/v1.0)).
+You can get the Windows executable that doesn't have additional dependencies and doesn't need installation from this repo's Releases (look at the "release" link at the top, or click [Here](https://github.com/hossein/PersianCalendar/releases/tag/v1.0)).
 
 For Linux, Apple OSX or other platforms which Qt4 supports you must make it using Qt:
 
@@ -34,7 +34,7 @@ $ make
 
 License
 ---
-This program is released under the GNU GPL version 3, or any other later version. See the About dialog or sources for the license.
+This program is released under the GNU GPL version 3, or at your choice any later version. See the About dialog or sources for the license.
 
 It uses the [Jalali calendar conversion routines](http://www.farsiweb.info/jalali/jalali.c) from the FarsiWeb project, released under LGPL.
 
