@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/1leftarrow.png</file>
+        <file>res/1rightarrow.png</file>
+        <file>res/BRoya.ttf</file>
+        <file>res/BRoyaBd.ttf</file>
+    </qresource>
+</RCC>
