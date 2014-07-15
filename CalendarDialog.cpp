@@ -71,12 +71,12 @@ void CalendarDialog::on_lblTodayDate_linkActivated(const QString& link)
 void CalendarDialog::on_btnAbout_clicked()
 {
     QMessageBox::information(this, u("درباره"),
-     u("<strong>روزشمار پارسی</strong><br/><br/>ساخته‌ی "
+     u("<strong>روزشمار پارسی</strong><br/>ساخته‌ی "
        "<span style=\"font-family: Tahoma, sans-serif; font-size: 12pt\">"
        "<a href=\"mailto:mhazadmanesh2009@gmail.com\">mhazadmanesh2009@gmail.com</a>"
-       "</span><br/>"
+       "</span>"
 
-       "<div dir=\"ltr\" style=\"font-family: Tahoma, sans-serif; font-size: 10pt\">"
+       "<div dir=\"ltr\" style=\"font-family: Tahoma, sans-serif; font-size: 10pt\"><br/>"
        "Persian Calendar, simple Persian calendar<br/>"
        "Copyright (C) 2014 mhazadmanesh2009@gmail.com<br/>"
        "<br/>"
@@ -93,5 +93,5 @@ void CalendarDialog::on_btnAbout_clicked()
        "You should have received a copy of the GNU General Public License"
        "along with this program.  If not, see <a href=\"http://www.gnu.org/licenses/\">"
        "http://www.gnu.org/licenses/</a>."
-       "</div>"));
+       "<br/></div>"));
 }
