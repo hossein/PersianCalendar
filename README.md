@@ -21,14 +21,17 @@ English
 ---
 A Very Tiny Persian Calendar in Qt.
 
-This calendar lets you view the Persian/Jalali calendar. Use the buttons on top to navigate to previous/next month. Click on today's date to return back to the current year and month.
+This calendar lets you view the Persian/Jalali calendar. Use the buttons on top to navigate to previous/next month.
+Click on today's date to return back to the current year and month.
 
 This calendar lacks showing national holidays, appointment scheduling and conversions to/from Gregorian calendar.
 **However,** its big and clear text and buttons and High-DPI support  make it easy to use on x86-based tablets.
 
 Releases
 ---
-You can get the Windows executable that doesn't have additional dependencies and doesn't need installation from this repo's Releases (look at the "release" link at the top, or click [Here](https://github.com/hossein/PersianCalendar/releases/tag/v1.0)).
+You can get the Windows executable that doesn't have additional dependencies and doesn't need installation 
+from this repo's Releases (look at the "release" link at the top, or click
+[Here](https://github.com/hossein/PersianCalendar/releases/tag/v1.0)).
 However, the repository sources might be newer than the Windows release.
 
 For Linux, Apple OSX or other platforms which Qt4 supports you must make it using Qt:
@@ -42,9 +45,11 @@ $ make
 
 License
 ---
-This program is released under the GNU GPL version 3, or at your choice any later version. See the About dialog or sources for the license.
+This program is released under the GNU GPL version 3, or at your choice any later version. 
+See the About dialog or sources for the license.
 
-It uses the [Jalali calendar conversion routines](http://www.farsiweb.info/jalali/jalali.c) from the FarsiWeb project, released under LGPL 2.1.
+It uses the [Jalali calendar conversion routines](http://www.farsiweb.info/jalali/jalali.c) from the FarsiWeb project, 
+released under LGPL 2.1.
 
 The icons are from Crystal Clear set by Everaldo Coelho, released under LGPL 2.1.
 
