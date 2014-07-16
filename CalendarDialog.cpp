@@ -39,8 +39,6 @@ CalendarDialog::CalendarDialog(QWidget *parent) :
     this->setWindowFlags(this->windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
     setWindowModality(Qt::WindowModal); //This dialog shouldn't be modal at all, this is for fun only!
 
-    setTodayText("text-decoration: none;");
-
     int indexToInsert = ui->vlMain->indexOf(ui->widCalendarWidget);
     ui->vlMain->removeWidget(ui->widCalendarWidget);
 
@@ -51,6 +49,10 @@ CalendarDialog::CalendarDialog(QWidget *parent) :
     widCal->setFont(calFont);
     ui->vlMain->insertWidget(indexToInsert, widCal, 1);
     connect(widCal, SIGNAL(monthChanged(int,int)), this, SLOT(monthChanged(int,int)));
+
+    setTodayText("text-decoration: none;");
+    m_emphTimer = new QTimer(this);
+    m_emphTimer->setInterval(EmphTimerInterval);
 }
 
 CalendarDialog::~CalendarDialog()
@@ -72,8 +74,9 @@ void CalendarDialog::on_lblTodayDate_linkActivated(const QString& link)
 void CalendarDialog::on_btnAbout_clicked()
 {
     QMessageBox::information(this, u("درباره"),
-     u("<strong>روزشمار پارسی</strong><br/>ساخته‌ی "
-       "<span style=\"font-family: Tahoma, sans-serif; font-size: 12pt\">"
+     u("<strong>روزشمار پارسی</strong>"
+       "<br/>نگارش 1‌/‌1"
+       "<br/>ساخته‌ی <span style=\"font-family: Tahoma, sans-serif; font-size: 12pt\">"
        "<a href=\"mailto:mhazadmanesh2009@gmail.com\">mhazadmanesh2009@gmail.com</a>"
        "</span>"
 
@@ -97,30 +100,35 @@ void CalendarDialog::on_btnAbout_clicked()
        "<br/></div>"));
 }
 
-void CalendarDialog::monthChanged(int out_active_j_y, int out_active_j_m)
+void CalendarDialog::monthChanged(int active_j_y, int active_j_m)
 {
-    //int j_y, j_m, j_d;
-    //if Ct::Date::PersianDate::GregorianToJalali()
+    int j_y, j_m, j_d;
+    Ct::Date::PersianDate::GregorianToJalali(QDate::currentDate(), j_y, j_m, j_d);
+
+    if (j_y == active_j_y && j_m == active_j_m)
+        return; //User has come back to the current month.
+
     setTodayText("color: red; text-decoration: underline;");
 
-    emphRemaining = 6; //Must be even to end up with no emphasis
-    QTimer::singleShot(EmphTimerInterval, this, SLOT(todayEmphasisOn()));
+    //Stop previous blinking, if it is.
+    m_emphTimer->stop();
+    disconnect(m_emphTimer, SIGNAL(timeout()), 0, 0);
+
+    //start the new blinking
+    emphRemaining = 5; //Must be an odd number to end up with no emphasis
+    connect(m_emphTimer, SIGNAL(timeout()), this, SLOT(toggleTodayEmphasis()));
+    m_emphTimer->start();
 }
 
-void CalendarDialog::todayEmphasisOn()
+void CalendarDialog::toggleTodayEmphasis()
 {
-    setTodayText("text-decoration: underline;"); //Uses default color for links, i.e color: blue;
+    //Uses default color for links, i.e color: blue;
+    setTodayText(emphRemaining % 2 == 0
+                 ? "text-decoration: underline;"
+                 : "text-decoration: none;");
 
-    if (--emphRemaining > 0)
-        QTimer::singleShot(EmphTimerInterval, this, SLOT(todayEmphasisOff()));
-}
-
-void CalendarDialog::todayEmphasisOff()
-{
-    setTodayText("text-decoration: none;"); //Uses default color for links, i.e color: blue;
-
-    if (--emphRemaining > 0)
-        QTimer::singleShot(EmphTimerInterval, this, SLOT(todayEmphasisOn()));
+    if (--emphRemaining == 0)
+        m_emphTimer->stop();
 }
 
 void CalendarDialog::setTodayText(const QString& style)

@@ -161,7 +161,7 @@ void CalendarWidget::today()
 
     update();
     if (emitMonthChanged)
-        emit monthChanged(active_j_y, active_j_y);
+        emit monthChanged(active_j_y, active_j_m);
 }
 
 void CalendarWidget::prevMonth()
@@ -174,7 +174,7 @@ void CalendarWidget::prevMonth()
     }
 
     update();
-    emit monthChanged(active_j_y, active_j_y);
+    emit monthChanged(active_j_y, active_j_m);
 }
 
 void CalendarWidget::nextMonth()
@@ -187,5 +187,5 @@ void CalendarWidget::nextMonth()
     }
 
     update();
-    emit monthChanged(active_j_y, active_j_y);
+    emit monthChanged(active_j_y, active_j_m);
 }

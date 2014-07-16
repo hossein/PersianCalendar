@@ -21,6 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include <QDialog>
 
+class QTimer;
+
 class CalendarWidget;
 namespace Ui { class CalendarDialog; }
 
@@ -37,15 +39,15 @@ private slots:
     void on_lblTodayDate_linkActivated(const QString& link);
     void on_btnAbout_clicked();
 
-    void monthChanged(int out_active_j_y, int out_active_j_m);
-    void todayEmphasisOn();
-    void todayEmphasisOff();
+    void monthChanged(int active_j_y, int active_j_m);
+    void toggleTodayEmphasis();
     void setTodayText(const QString& style);
 
 private:
     Ui::CalendarDialog *ui;
     CalendarWidget* widCal;
 
+    QTimer* m_emphTimer;
     enum { EmphTimerInterval = 300 };
     int emphRemaining;
 };

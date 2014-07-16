@@ -52,6 +52,6 @@ public slots:
     void nextMonth();
 
 signals:
-    void monthChanged(int out_active_j_y, int out_active_j_m);
+    void monthChanged(int active_j_y, int active_j_m);
 
 };
