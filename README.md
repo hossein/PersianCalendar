@@ -2,13 +2,20 @@ PersianCalendar
 ===============
 
 <h2 dir="rtl">روزشمار پارسی</h2>
-<p dir="rtl">این یک تقویم ساده هجری شمسی (جلالی) است. صرفاً تقویم نمایش داده می‌شود و با زدن دکمه‌های چپ و راست بالای پنجره به ماه قبل و بعد می‌روید. با کلیک روی تاریخ امروز به ماه و سال جاری برمی‌گردید.</p>
+<p dir="rtl">این یک تقویم ساده هجری شمسی (جلالی) است. 
+صرفاً تقویم نمایش داده می‌شود و با زدن دکمه‌های چپ و راست بالای پنجره به ماه قبل و بعد می‌روید. 
+با کلیک روی تاریخ امروز به ماه و سال جاری برمی‌گردید.</p>
 
-<p dir="rtl">امکاناتی نظیر نمایش مناسبت‌ها، تنظیم یادداشت و قرار ملاقات‌ها و تبدیل به تاریخ میلادی وجود ندارد. <strong>با این وجود</strong> این تقویم با داشتن دکمه‌ها و متون درشت و پشتیبانی از High-DPI می‌تواند روی تبلت‌های x86 مورد استفاده قرار بگیرد.</p>
+<p dir="rtl">امکاناتی نظیر نمایش مناسبت‌ها، تنظیم یادداشت و قرار ملاقات‌ها و تبدیل به تاریخ میلادی وجود ندارد. 
+<strong>با این وجود</strong> این تقویم با داشتن دکمه‌ها و متون درشت و پشتیبانی از High-DPI 
+می‌تواند روی تبلت‌های x86 مورد استفاده قرار بگیرد.</p>
 
-<p dir="rtl">نسخه ویندوزی این تقویم که وابستگی اضافی و نیاز به نصب ندارد را از <a href="https://github.com/hossein/PersianCalendar/releases/tag/v1.0">اینجا</a> می‌توانید بگیرید.</p>
+<p dir="rtl">نسخه ویندوزی این تقویم که وابستگی اضافی و نیاز به نصب ندارد را از 
+<a href="https://github.com/hossein/PersianCalendar/releases/tag/v1.0">اینجا</a> می‌توانید بگیرید.</p>
 
-<p dir="rtl">برای Linux و OSX و هر پلتفرم دیگری که Qt4 پشتیبانی می‌کند، خودتان باید برنامه را با استفاده از Qt بسازید. برای اطلاعات بیشتر در این مورد و لیسانس برنامه  به توضیحات انگلیسی مراجعه کنید.</p>
+<p dir="rtl">کد موجود در Repository ممکن است جدیدتر از Release باشد. 
+همچنین برای Linux و OSX و هر پلتفرم دیگری که Qt4 پشتیبانی می‌کند، خودتان باید برنامه را با استفاده از Qt بسازید. 
+برای اطلاعات بیشتر در این مورد و لیسانس برنامه  به توضیحات انگلیسی مراجعه کنید.</p>
 
 English
 ---
@@ -22,6 +29,7 @@ This calendar lacks showing national holidays, appointment scheduling and conver
 Releases
 ---
 You can get the Windows executable that doesn't have additional dependencies and doesn't need installation from this repo's Releases (look at the "release" link at the top, or click [Here](https://github.com/hossein/PersianCalendar/releases/tag/v1.0)).
+However, the repository sources might be newer than the Windows release.
 
 For Linux, Apple OSX or other platforms which Qt4 supports you must make it using Qt:
 

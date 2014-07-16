@@ -153,10 +153,15 @@ void CalendarWidget::drawMonth(QPainter& p, int j_y, int j_m, int j_d)
 
 void CalendarWidget::today()
 {
+    bool emitMonthChanged = (active_j_y != realCurrent_j_y || active_j_m != realCurrent_j_m);
+
     active_j_y = realCurrent_j_y;
     active_j_m = realCurrent_j_m;
 
+
     update();
+    if (emitMonthChanged)
+        emit monthChanged(active_j_y, active_j_y);
 }
 
 void CalendarWidget::prevMonth()
@@ -169,6 +174,7 @@ void CalendarWidget::prevMonth()
     }
 
     update();
+    emit monthChanged(active_j_y, active_j_y);
 }
 
 void CalendarWidget::nextMonth()
@@ -181,4 +187,5 @@ void CalendarWidget::nextMonth()
     }
 
     update();
+    emit monthChanged(active_j_y, active_j_y);
 }

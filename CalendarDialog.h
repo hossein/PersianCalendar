@@ -37,7 +37,15 @@ private slots:
     void on_lblTodayDate_linkActivated(const QString& link);
     void on_btnAbout_clicked();
 
+    void monthChanged(int out_active_j_y, int out_active_j_m);
+    void todayEmphasisOn();
+    void todayEmphasisOff();
+    void setTodayText(const QString& style);
+
 private:
     Ui::CalendarDialog *ui;
     CalendarWidget* widCal;
+
+    enum { EmphTimerInterval = 300 };
+    int emphRemaining;
 };

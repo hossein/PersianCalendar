@@ -27,6 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <QDate>
 #include <QMessageBox>
+#include <QTimer>
 
 CalendarDialog::CalendarDialog(QWidget *parent) :
     QDialog(parent),
@@ -38,8 +39,7 @@ CalendarDialog::CalendarDialog(QWidget *parent) :
     this->setWindowFlags(this->windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
     setWindowModality(Qt::WindowModal); //This dialog shouldn't be modal at all, this is for fun only!
 
-    ui->lblTodayDate->setText(u("<strong>امروز: <a style=\"text-decoration: none;\" href=\"0\">%1</a></strong>")
-                              .arg(Ct::Date::PersianDate::fullPersianDate(QDate::currentDate())));
+    setTodayText("text-decoration: none;");
 
     int indexToInsert = ui->vlMain->indexOf(ui->widCalendarWidget);
     ui->vlMain->removeWidget(ui->widCalendarWidget);
@@ -50,6 +50,7 @@ CalendarDialog::CalendarDialog(QWidget *parent) :
     widCal = new CalendarWidget(this);
     widCal->setFont(calFont);
     ui->vlMain->insertWidget(indexToInsert, widCal, 1);
+    connect(widCal, SIGNAL(monthChanged(int,int)), this, SLOT(monthChanged(int,int)));
 }
 
 CalendarDialog::~CalendarDialog()
@@ -94,4 +95,36 @@ void CalendarDialog::on_btnAbout_clicked()
        "along with this program.  If not, see <a href=\"http://www.gnu.org/licenses/\">"
        "http://www.gnu.org/licenses/</a>."
        "<br/></div>"));
+}
+
+void CalendarDialog::monthChanged(int out_active_j_y, int out_active_j_m)
+{
+    //int j_y, j_m, j_d;
+    //if Ct::Date::PersianDate::GregorianToJalali()
+    setTodayText("color: red; text-decoration: underline;");
+
+    emphRemaining = 6; //Must be even to end up with no emphasis
+    QTimer::singleShot(EmphTimerInterval, this, SLOT(todayEmphasisOn()));
+}
+
+void CalendarDialog::todayEmphasisOn()
+{
+    setTodayText("text-decoration: underline;"); //Uses default color for links, i.e color: blue;
+
+    if (--emphRemaining > 0)
+        QTimer::singleShot(EmphTimerInterval, this, SLOT(todayEmphasisOff()));
+}
+
+void CalendarDialog::todayEmphasisOff()
+{
+    setTodayText("text-decoration: none;"); //Uses default color for links, i.e color: blue;
+
+    if (--emphRemaining > 0)
+        QTimer::singleShot(EmphTimerInterval, this, SLOT(todayEmphasisOn()));
+}
+
+void CalendarDialog::setTodayText(const QString& style)
+{
+    ui->lblTodayDate->setText(u("<strong>امروز: <a style=\"") + style + u("\" href=\"0\">%1</a></strong>")
+                              .arg(Ct::Date::PersianDate::fullPersianDate(QDate::currentDate())));
 }
