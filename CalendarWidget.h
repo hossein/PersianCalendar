@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 #include <QWidget>
+#include <QPixmap>
 
 class QPushButton;
 
@@ -30,6 +31,9 @@ class CalendarWidget : public QWidget
 private:
     QPushButton* btnPrevMonth;
     QPushButton* btnNextMonth;
+
+    QPixmap monthPixmap;
+    qint64 datestamps[7][7];
 
     int realCurrent_j_y;
     int realCurrent_j_m;
@@ -43,8 +47,12 @@ public:
     
 protected:
     void resizeEvent(QResizeEvent*);
+    void showEvent(QShowEvent*);
     void paintEvent(QPaintEvent* event);
-    void drawMonth(QPainter& p, int j_y, int j_m, int j_d);
+    void calculateDrawMonthUpdate();
+    void calculateAndDrawMonth(int j_y, int j_m, int j_d);
+
+    void mouseReleaseEvent(QMouseEvent* event);
 
 public slots:
     void today();
@@ -53,5 +61,4 @@ public slots:
 
 signals:
     void monthChanged(int active_j_y, int active_j_m);
-
 };

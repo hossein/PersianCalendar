@@ -24,8 +24,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "CtDate.h"
 
 #include <QDate>
+#include <QDateTime>
 #include <QtGui/QFont>
 #include <QtGui/QPainter>
+#include <QtGui/QMouseEvent>
+
+#include <QtGui/QToolTip>
 #include <QtGui/QPushButton>
 
 CalendarWidget::CalendarWidget(QWidget *parent) :
@@ -56,6 +60,8 @@ CalendarWidget::CalendarWidget(QWidget *parent) :
     btnNextMonth->setGeometry(0, 0, hUnit / 2, vUnit);
     btnNextMonth->setIconSize(QSize(iconDimension, iconDimension));
     connect(btnNextMonth, SIGNAL(clicked()), this, SLOT(nextMonth()));
+
+    //a `resizeEvent` is automatically generated which draws the month.
 }
 
 void CalendarWidget::resizeEvent(QResizeEvent*)
@@ -69,19 +75,42 @@ void CalendarWidget::resizeEvent(QResizeEvent*)
     int iconDimension = qMin(btnPrevMonth->width(), btnPrevMonth->height()) - 4;
     btnPrevMonth->setIconSize(QSize(iconDimension, iconDimension));
     btnNextMonth->setIconSize(QSize(iconDimension, iconDimension));
+
+    calculateDrawMonthUpdate(); //Although on resize there is an automatic `update()`.
+}
+
+void CalendarWidget::showEvent(QShowEvent*)
+{
+    //a `resizeEvent` is automatically generated the first time widget shows, at least on Windows.
+    //  However we want to make sure anyway.
+    calculateDrawMonthUpdate();
 }
 
 void CalendarWidget::paintEvent(QPaintEvent* event)
 {
     QWidget::paintEvent(event);
     QPainter p(this);
-
-    bool realCurrentMonth = (active_j_y == realCurrent_j_y && active_j_m == realCurrent_j_m);
-    drawMonth(p, active_j_y, active_j_m, realCurrentMonth ? realCurrent_j_d : 0);
+    p.drawPixmap(0, 0, monthPixmap);
 }
 
-void CalendarWidget::drawMonth(QPainter& p, int j_y, int j_m, int j_d)
+void CalendarWidget::calculateDrawMonthUpdate()
 {
+    bool realCurrentMonth = (active_j_y == realCurrent_j_y && active_j_m == realCurrent_j_m);
+    calculateAndDrawMonth(active_j_y, active_j_m, realCurrentMonth ? realCurrent_j_d : 0);
+    update();
+}
+
+void CalendarWidget::calculateAndDrawMonth(int j_y, int j_m, int j_d)
+{
+    monthPixmap = QPixmap(this->size());
+
+    //Must be done.
+    //`Qt::transparent` is equivalent to `QColor::fromRgb(0,0,0,0)` or `QColor::fromRgba(0)`.
+    //We could also have used `palette().color(QPalette::Window)`.
+    monthPixmap.fill(Qt::transparent);
+
+    QPainter p(&monthPixmap);
+
     p.setPen(Qt::black);
 
     int hUnit = this->width() / 7;
@@ -106,6 +135,9 @@ void CalendarWidget::drawMonth(QPainter& p, int j_y, int j_m, int j_d)
         else
             p.fillRect(cellRect, QColor(128, 192, 255));
         p.drawText(cellRect, Qt::AlignCenter, Ct::Date::PersianDate::nameOfPersianWeekDay(i + 1));
+
+        for (int j = 0; j < 7; j++)
+            datestamps[j][i] = 0;
     }
 
     QDate firstDayOfJalaliMonth;
@@ -122,8 +154,12 @@ void CalendarWidget::drawMonth(QPainter& p, int j_y, int j_m, int j_d)
 
     int jalaliMonthDayCount = Ct::Date::PersianDate::numberOfDaysInJalaliMonth(j_y, j_m);
 
+    QDateTime dateStamp(firstDayOfJalaliMonth);
     for (int i = 1; i <= jalaliMonthDayCount; i++)
     {
+        datestamps[(6 - hPos)][vPos-2] = dateStamp.toMSecsSinceEpoch();
+        dateStamp = dateStamp.addDays(1);
+
         QRect cellRect((6 - hPos) * hUnit, vPos * vUnit, hUnit, vUnit);
         cellRect.adjust(1, 1, -1, -1);
         if (i % 7 == modFridays)
@@ -151,6 +187,20 @@ void CalendarWidget::drawMonth(QPainter& p, int j_y, int j_m, int j_d)
     }
 }
 
+void CalendarWidget::mouseReleaseEvent(QMouseEvent* event)
+{
+    int hPos = event->x() * 7 / this->width();
+    int vPos = event->y() * 7 / this->height();
+    vPos -= 2;
+
+    if (datestamps[hPos][vPos] == 0)
+        return;
+
+    QPoint pos = this->mapToGlobal(event->pos());
+    QString gregDate = QDateTime::fromMSecsSinceEpoch(datestamps[hPos][vPos]).date().toString();
+    QToolTip::showText(pos, gregDate, 0, this->rect());
+}
+
 void CalendarWidget::today()
 {
     bool emitMonthChanged = (active_j_y != realCurrent_j_y || active_j_m != realCurrent_j_m);
@@ -159,7 +209,7 @@ void CalendarWidget::today()
     active_j_m = realCurrent_j_m;
 
 
-    update();
+    calculateDrawMonthUpdate();
     if (emitMonthChanged)
         emit monthChanged(active_j_y, active_j_m);
 }
@@ -173,7 +223,7 @@ void CalendarWidget::prevMonth()
         active_j_y -= 1;
     }
 
-    update();
+    calculateDrawMonthUpdate();
     emit monthChanged(active_j_y, active_j_m);
 }
 
@@ -186,6 +236,6 @@ void CalendarWidget::nextMonth()
         active_j_y += 1;
     }
 
-    update();
+    calculateDrawMonthUpdate();
     emit monthChanged(active_j_y, active_j_m);
 }
