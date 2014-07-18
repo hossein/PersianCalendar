@@ -110,8 +110,11 @@ void CalendarWidget::calculateAndDrawMonth(int j_y, int j_m, int j_d)
     monthPixmap.fill(Qt::transparent);
 
     QPainter p(&monthPixmap);
+    QPen blackPen(QColor(0, 0, 0));
+    QPen grayPen(QColor(128, 128, 128));
+    QPen blueThickPen(QColor(0, 0, 255), 2);
 
-    p.setPen(Qt::black);
+    p.setPen(blackPen);
 
     int hUnit = this->width() / 7;
     int vUnit = this->height() / 7;
@@ -124,7 +127,6 @@ void CalendarWidget::calculateAndDrawMonth(int j_y, int j_m, int j_d)
     boldFont.setBold(true);
     p.setFont(boldFont);
     p.drawText(titleRect, Qt::AlignCenter, title);
-    p.setFont(this->font());
 
     for (int i = 0; i < 7; i++)
     {
@@ -142,6 +144,7 @@ void CalendarWidget::calculateAndDrawMonth(int j_y, int j_m, int j_d)
 
     QDate firstDayOfJalaliMonth;
     Ct::Date::PersianDate::JalaliToGregorian(firstDayOfJalaliMonth, j_y, j_m, 1);
+    QDateTime dateStamp(firstDayOfJalaliMonth);
 
     int hPos = 0;
     int vPos = 2;
@@ -154,7 +157,7 @@ void CalendarWidget::calculateAndDrawMonth(int j_y, int j_m, int j_d)
 
     int jalaliMonthDayCount = Ct::Date::PersianDate::numberOfDaysInJalaliMonth(j_y, j_m);
 
-    QDateTime dateStamp(firstDayOfJalaliMonth);
+    QFont smallEnglishFont("Tahoma", 8, QFont::Bold);
     for (int i = 1; i <= jalaliMonthDayCount; i++)
     {
         datestamps[(6 - hPos)][vPos-2] = dateStamp.toMSecsSinceEpoch();
@@ -168,11 +171,23 @@ void CalendarWidget::calculateAndDrawMonth(int j_y, int j_m, int j_d)
             p.fillRect(cellRect, Qt::white);
         if (i == j_d) //Today
         {
-            QPen pen = p.pen();
-            p.setPen(QPen(QColor(0, 0, 255), 2));
+            p.setPen(blueThickPen);
             p.drawRect(cellRect);
-            p.setPen(pen);
         }
+
+        //First draw the Gregorian number so that it goes lower than the Persian day in high-DPI.
+        p.setPen(grayPen);
+        p.setFont(smallEnglishFont);
+
+        QString dayText = "";
+        if (dateStamp.date().day() == 1)
+            dayText = dateStamp.date().toString("MMM") + " "; //Short month name.
+        dayText += QString::number(dateStamp.date().day()) + " "; //Some right margin is useful!
+
+        p.drawText(cellRect, Qt::AlignRight | Qt::AlignBottom, dayText);
+
+        p.setPen(blackPen);
+        p.setFont(this->font());
         p.drawText(cellRect, Qt::AlignCenter, QString::number(i));
 
         hPos++;
