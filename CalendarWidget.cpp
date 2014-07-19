@@ -160,9 +160,6 @@ void CalendarWidget::calculateAndDrawMonth(int j_y, int j_m, int j_d)
     QFont smallEnglishFont("Tahoma", 8, QFont::Bold);
     for (int i = 1; i <= jalaliMonthDayCount; i++)
     {
-        datestamps[(6 - hPos)][vPos-2] = dateStamp.toMSecsSinceEpoch();
-        dateStamp = dateStamp.addDays(1);
-
         QRect cellRect((6 - hPos) * hUnit, vPos * vUnit, hUnit, vUnit);
         cellRect.adjust(1, 1, -1, -1);
         if (i % 7 == modFridays)
@@ -195,6 +192,11 @@ void CalendarWidget::calculateAndDrawMonth(int j_y, int j_m, int j_d)
         p.setFont(this->font());
         p.drawText(cellRect, Qt::AlignCenter, QString::number(i));
 
+        //FIRST save the datestamps
+        datestamps[(6 - hPos)][vPos-2] = dateStamp.toMSecsSinceEpoch();
+        dateStamp = dateStamp.addDays(1);
+
+        //THEN 'increase' hPos/vPos
         hPos++;
         if (hPos == 7)
         {
