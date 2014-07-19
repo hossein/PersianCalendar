@@ -111,7 +111,7 @@ void CalendarWidget::calculateAndDrawMonth(int j_y, int j_m, int j_d)
 
     QPainter p(&monthPixmap);
     QPen blackPen(QColor(0, 0, 0));
-    QPen grayPen(QColor(128, 128, 128));
+    QPen grayPen(QColor(192, 192, 192));
     QPen blueThickPen(QColor(0, 0, 255), 2);
 
     p.setPen(blackPen);
@@ -180,9 +180,14 @@ void CalendarWidget::calculateAndDrawMonth(int j_y, int j_m, int j_d)
         p.setFont(smallEnglishFont);
 
         QString dayText = "";
-        if (dateStamp.date().day() == 1)
-            dayText = dateStamp.date().toString("MMM") + " "; //Short month name.
-        dayText += QString::number(dateStamp.date().day()) + " "; //Some right margin is useful!
+        //In case either Persian or Gregorian day is 1, we add the short month name (MMM). Since
+        //  in Persian locale the month name is localized, we also add space before it to have
+        //  some right margin.
+        if (i == 1 || dateStamp.date().day() == 1)
+            dayText = " " + dateStamp.date().toString("MMM") + " ";
+        //We add space after the day because some right margin is always useful! Of course this space
+        //  is used if a localized month name wasn't added to the day number.
+        dayText += QString::number(dateStamp.date().day()) + " ";
 
         p.drawText(cellRect, Qt::AlignRight | Qt::AlignBottom, dayText);
 
