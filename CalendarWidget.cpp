@@ -193,7 +193,7 @@ void CalendarWidget::calculateAndDrawMonth(int j_y, int j_m, int j_d)
         p.drawText(cellRect, Qt::AlignCenter, QString::number(i));
 
         //FIRST save the datestamps
-        datestamps[(6 - hPos)][vPos-2] = dateStamp.toMSecsSinceEpoch();
+        datestamps[(6 - hPos)][vPos] = dateStamp.toMSecsSinceEpoch();
         dateStamp = dateStamp.addDays(1);
 
         //THEN 'increase' hPos/vPos
@@ -211,9 +211,11 @@ void CalendarWidget::calculateAndDrawMonth(int j_y, int j_m, int j_d)
 
 void CalendarWidget::mouseReleaseEvent(QMouseEvent* event)
 {
+    if (event->button() != Qt::LeftButton)
+        return;
+
     int hPos = event->x() * 7 / this->width();
     int vPos = event->y() * 7 / this->height();
-    vPos -= 2;
 
     if (datestamps[hPos][vPos] == 0)
         return;
