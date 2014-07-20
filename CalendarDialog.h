@@ -33,21 +33,31 @@ class CalendarDialog : public QDialog
 public:
     explicit CalendarDialog(QWidget *parent = 0);
     ~CalendarDialog();
+
+protected:
+    void closeEvent(QCloseEvent*);
     
 private slots:
     void on_btnAccept_clicked();
     void on_lblTodayDate_linkActivated(const QString& link);
-    void on_btnAbout_clicked();
+    void on_btnDropOptions_clicked();
 
     void monthChanged(int active_j_y, int active_j_m);
     void toggleTodayEmphasis();
     void setTodayText(const QString& style);
 
+    void loadSettings();
+    void saveSettings();
+
+    void toggleShowGregorianDates();
+    void showAbout();
+
 private:
     Ui::CalendarDialog *ui;
-    CalendarWidget* widCal;
+    CalendarWidget* m_widCal;
 
     QTimer* m_emphTimer;
     enum { EmphTimerInterval = 300 };
     int emphRemaining;
+
 };

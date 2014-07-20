@@ -93,11 +93,20 @@ void CalendarWidget::paintEvent(QPaintEvent* event)
     p.drawPixmap(0, 0, monthPixmap);
 }
 
-void CalendarWidget::calculateDrawMonthUpdate()
+void CalendarWidget::mouseReleaseEvent(QMouseEvent* event)
 {
-    bool realCurrentMonth = (active_j_y == realCurrent_j_y && active_j_m == realCurrent_j_m);
-    calculateAndDrawMonth(active_j_y, active_j_m, realCurrentMonth ? realCurrent_j_d : 0);
-    update();
+    if (event->button() != Qt::LeftButton)
+        return;
+
+    int hPos = event->x() * 7 / this->width();
+    int vPos = event->y() * 7 / this->height();
+
+    if (datestamps[hPos][vPos] == 0)
+        return;
+
+    QPoint pos = this->mapToGlobal(event->pos());
+    QString gregDate = QDateTime::fromMSecsSinceEpoch(datestamps[hPos][vPos]).date().toString();
+    QToolTip::showText(pos, gregDate, 0, this->rect());
 }
 
 void CalendarWidget::calculateAndDrawMonth(int j_y, int j_m, int j_d)
@@ -172,21 +181,24 @@ void CalendarWidget::calculateAndDrawMonth(int j_y, int j_m, int j_d)
             p.drawRect(cellRect);
         }
 
-        //First draw the Gregorian number so that it goes lower than the Persian day in high-DPI.
-        p.setPen(grayPen);
-        p.setFont(smallEnglishFont);
+        //Draw the Gregorian number FIRST so that it goes lower than the Persian day in high-DPI.
+        if (settings.showGregorianDates)
+        {
+            p.setPen(grayPen);
+            p.setFont(smallEnglishFont);
 
-        QString dayText = "";
-        //In case either Persian or Gregorian day is 1, we add the short month name (MMM). Since
-        //  in Persian locale the month name is localized, we also add space before it to have
-        //  some right margin.
-        if (i == 1 || dateStamp.date().day() == 1)
-            dayText = " " + dateStamp.date().toString("MMM") + " ";
-        //We add space after the day because some right margin is always useful! Of course this space
-        //  is used if a localized month name wasn't added to the day number.
-        dayText += QString::number(dateStamp.date().day()) + " ";
+            QString dayText = "";
+            //In case either Persian or Gregorian day is 1, we add the short month name (MMM). Since
+            //  in Persian locale the month name is localized, we also add space before it to have
+            //  some right margin.
+            if (i == 1 || dateStamp.date().day() == 1)
+                dayText = " " + dateStamp.date().toString("MMM") + " ";
+            //We add space after the day because some right margin is always useful! Of course this space
+            //  is used if a localized month name wasn't added to the day number.
+            dayText += QString::number(dateStamp.date().day()) + " ";
 
-        p.drawText(cellRect, Qt::AlignRight | Qt::AlignBottom, dayText);
+            p.drawText(cellRect, Qt::AlignRight | Qt::AlignBottom, dayText);
+        }
 
         p.setPen(blackPen);
         p.setFont(this->font());
@@ -209,20 +221,11 @@ void CalendarWidget::calculateAndDrawMonth(int j_y, int j_m, int j_d)
     }
 }
 
-void CalendarWidget::mouseReleaseEvent(QMouseEvent* event)
+void CalendarWidget::calculateDrawMonthUpdate()
 {
-    if (event->button() != Qt::LeftButton)
-        return;
-
-    int hPos = event->x() * 7 / this->width();
-    int vPos = event->y() * 7 / this->height();
-
-    if (datestamps[hPos][vPos] == 0)
-        return;
-
-    QPoint pos = this->mapToGlobal(event->pos());
-    QString gregDate = QDateTime::fromMSecsSinceEpoch(datestamps[hPos][vPos]).date().toString();
-    QToolTip::showText(pos, gregDate, 0, this->rect());
+    bool realCurrentMonth = (active_j_y == realCurrent_j_y && active_j_m == realCurrent_j_m);
+    calculateAndDrawMonth(active_j_y, active_j_m, realCurrentMonth ? realCurrent_j_d : 0);
+    update();
 }
 
 void CalendarWidget::today()

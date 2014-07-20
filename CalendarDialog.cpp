@@ -25,9 +25,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "CtCommon.h"
 #include "CtDate.h"
 
+#include <QMenu>
 #include <QDate>
 #include <QMessageBox>
 #include <QTimer>
+#include <QSettings>
 
 CalendarDialog::CalendarDialog(QWidget *parent) :
     QDialog(parent),
@@ -45,19 +47,30 @@ CalendarDialog::CalendarDialog(QWidget *parent) :
     QFont calFont = this->font();
     calFont.setPointSize(calFont.pointSize() * 4 / 3);
 
-    widCal = new CalendarWidget(this);
-    widCal->setFont(calFont);
-    ui->vlMain->insertWidget(indexToInsert, widCal, 1);
-    connect(widCal, SIGNAL(monthChanged(int,int)), this, SLOT(monthChanged(int,int)));
+    m_widCal = new CalendarWidget(this);
+    m_widCal->setFont(calFont);
+    ui->vlMain->insertWidget(indexToInsert, m_widCal, 1);
+    connect(m_widCal, SIGNAL(monthChanged(int,int)), this, SLOT(monthChanged(int,int)));
+
+    //Make the drop options button square-shaped
+    this->ensurePolished();
+    ui->btnDropOptions->setFixedWidth(ui->btnDropOptions->sizeHint().height());
 
     setTodayText("text-decoration: none;");
     m_emphTimer = new QTimer(this);
     m_emphTimer->setInterval(EmphTimerInterval);
+
+    loadSettings();
 }
 
 CalendarDialog::~CalendarDialog()
 {
     delete ui;
+}
+
+void CalendarDialog::closeEvent(QCloseEvent*)
+{
+    saveSettings();
 }
 
 void CalendarDialog::on_btnAccept_clicked()
@@ -68,36 +81,24 @@ void CalendarDialog::on_btnAccept_clicked()
 void CalendarDialog::on_lblTodayDate_linkActivated(const QString& link)
 {
     Q_UNUSED(link)
-    widCal->today();
+    m_widCal->today();
 }
 
-void CalendarDialog::on_btnAbout_clicked()
+void CalendarDialog::on_btnDropOptions_clicked()
 {
-    QMessageBox::information(this, u("درباره"),
-     u("<strong>روزشمار پارسی</strong>"
-       "<br/>نگارش 1‌/‌1"
-       "<br/>ساخته‌ی <span style=\"font-family: Tahoma, sans-serif; font-size: 12pt\">"
-       "<a href=\"mailto:mhazadmanesh2009@gmail.com\">mhazadmanesh2009@gmail.com</a>"
-       "</span>"
+    QMenu optionsMenu("Options");
 
-       "<div dir=\"ltr\" style=\"font-family: Tahoma, sans-serif; font-size: 10pt\"><br/>"
-       "Persian Calendar, simple Persian calendar<br/>"
-       "Copyright (C) 2014 mhazadmanesh2009@gmail.com<br/>"
-       "<br/>"
-       "This program is free software: you can redistribute it and/or modify<br/>"
-       "it under the terms of the GNU General Public License as published by<br/>"
-       "the Free Software Foundation, either version 3 of the License, or<br/>"
-       "(at your option) any later version.<br/>"
-       "<br/>"
-       "This program is distributed in the hope that it will be useful,<br/>"
-       "but WITHOUT ANY WARRANTY; without even the implied warranty of<br/>"
-       "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<br/>"
-       "GNU General Public License for more details.<br/>"
-       "<br/>"
-       "You should have received a copy of the GNU General Public License"
-       "along with this program.  If not, see <a href=\"http://www.gnu.org/licenses/\">"
-       "http://www.gnu.org/licenses/</a>."
-       "<br/></div>"));
+    QAction* a_showGregorian = new QAction(u("نمایش تاریخ میلادی"), &optionsMenu);
+    a_showGregorian->setCheckable(true);
+    a_showGregorian->setChecked(m_widCal->settings.showGregorianDates);
+    connect(a_showGregorian, SIGNAL(triggered()), this, SLOT(toggleShowGregorianDates()));
+
+    optionsMenu.addActions(QList<QAction*>() << a_showGregorian);
+    optionsMenu.addSeparator();
+    optionsMenu.addAction(u("درباره..."), this, SLOT(showAbout()));
+
+    QPoint pos = ui->btnDropOptions->mapToGlobal(ui->btnDropOptions->rect().bottomLeft());
+    optionsMenu.exec(pos);
 }
 
 void CalendarDialog::monthChanged(int active_j_y, int active_j_m)
@@ -135,4 +136,51 @@ void CalendarDialog::setTodayText(const QString& style)
 {
     ui->lblTodayDate->setText(u("<strong>امروز: <a style=\"") + style + u("\" href=\"0\">%1</a></strong>")
                               .arg(Ct::Date::PersianDate::fullPersianDate(QDate::currentDate())));
+}
+
+void CalendarDialog::loadSettings()
+{
+    QSettings sets(qApp->organizationName(), qApp->applicationName());
+    m_widCal->settings.showGregorianDates = sets.value("showgregorian", true).toBool();
+}
+
+void CalendarDialog::saveSettings()
+{
+    QSettings sets(qApp->organizationName(), qApp->applicationName());
+    sets.setValue("showgregorian", m_widCal->settings.showGregorianDates);
+}
+
+void CalendarDialog::toggleShowGregorianDates()
+{
+    m_widCal->settings.showGregorianDates = !m_widCal->settings.showGregorianDates;
+    m_widCal->calculateDrawMonthUpdate();
+}
+
+void CalendarDialog::showAbout()
+{
+    QMessageBox::information(this, u("درباره"),
+     u("<strong>روزشمار پارسی</strong>"
+       "<br/>نگارش 1‌/‌1"
+       "<br/>ساخته‌ی <span style=\"font-family: Tahoma, sans-serif; font-size: 12pt\">"
+       "<a href=\"mailto:mhazadmanesh2009@gmail.com\">mhazadmanesh2009@gmail.com</a>"
+       "</span>"
+
+       "<div dir=\"ltr\" style=\"font-family: Tahoma, sans-serif; font-size: 10pt\"><br/>"
+       "Persian Calendar, simple Persian calendar<br/>"
+       "Copyright (C) 2014 mhazadmanesh2009@gmail.com<br/>"
+       "<br/>"
+       "This program is free software: you can redistribute it and/or modify<br/>"
+       "it under the terms of the GNU General Public License as published by<br/>"
+       "the Free Software Foundation, either version 3 of the License, or<br/>"
+       "(at your option) any later version.<br/>"
+       "<br/>"
+       "This program is distributed in the hope that it will be useful,<br/>"
+       "but WITHOUT ANY WARRANTY; without even the implied warranty of<br/>"
+       "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<br/>"
+       "GNU General Public License for more details.<br/>"
+       "<br/>"
+       "You should have received a copy of the GNU General Public License"
+       "along with this program.  If not, see <a href=\"http://www.gnu.org/licenses/\">"
+       "http://www.gnu.org/licenses/</a>."
+       "<br/></div>"));
 }

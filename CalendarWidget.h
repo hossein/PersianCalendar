@@ -44,17 +44,24 @@ private:
 
 public:
     explicit CalendarWidget(QWidget *parent = 0);
+
+    struct CalendarWidgetSettings
+    {
+        CalendarWidgetSettings() : showGregorianDates(true) { }
+        bool showGregorianDates;
+    } settings;
     
 protected:
     void resizeEvent(QResizeEvent*);
     void showEvent(QShowEvent*);
     void paintEvent(QPaintEvent* event);
-    void calculateDrawMonthUpdate();
-    void calculateAndDrawMonth(int j_y, int j_m, int j_d);
-
     void mouseReleaseEvent(QMouseEvent* event);
 
+    void calculateAndDrawMonth(int j_y, int j_m, int j_d);
+
 public slots:
+    void calculateDrawMonthUpdate();
+
     void today();
     void prevMonth();
     void nextMonth();
