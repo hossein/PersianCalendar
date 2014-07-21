@@ -41,16 +41,16 @@ CalendarDialog::CalendarDialog(QWidget *parent) :
     this->setWindowFlags(this->windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
     setWindowModality(Qt::WindowModal); //This dialog shouldn't be modal at all, this is for fun only!
 
-    int indexToInsert = ui->vlMain->indexOf(ui->widCalendarWidget);
-    ui->vlMain->removeWidget(ui->widCalendarWidget);
+    //Promoted in UI designer
+    //int indexToInsert = ui->vlMain->indexOf(ui->widCalendarWidget);
+    //ui->vlMain->removeWidget(ui->widCalendarWidget);
+    //ui->widCal = new CalendarWidget(this);
+    //ui->vlMain->insertWidget(indexToInsert, ui->widCal, 1);
 
     QFont calFont = this->font();
     calFont.setPointSize(calFont.pointSize() * 4 / 3);
-
-    m_widCal = new CalendarWidget(this);
-    m_widCal->setFont(calFont);
-    ui->vlMain->insertWidget(indexToInsert, m_widCal, 1);
-    connect(m_widCal, SIGNAL(monthChanged(int,int)), this, SLOT(monthChanged(int,int)));
+    ui->widCal->setFont(calFont);
+    connect(ui->widCal, SIGNAL(monthChanged(int,int)), this, SLOT(monthChanged(int,int)));
 
     //Make the drop options button square-shaped
     this->ensurePolished();
@@ -81,7 +81,7 @@ void CalendarDialog::on_btnAccept_clicked()
 void CalendarDialog::on_lblTodayDate_linkActivated(const QString& link)
 {
     Q_UNUSED(link)
-    m_widCal->today();
+    ui->widCal->today();
 }
 
 void CalendarDialog::on_btnDropOptions_clicked()
@@ -90,7 +90,7 @@ void CalendarDialog::on_btnDropOptions_clicked()
 
     QAction* a_showGregorian = new QAction(u("نمایش تاریخ میلادی"), &optionsMenu);
     a_showGregorian->setCheckable(true);
-    a_showGregorian->setChecked(m_widCal->settings.showGregorianDates);
+    a_showGregorian->setChecked(ui->widCal->settings.showGregorianDates);
     connect(a_showGregorian, SIGNAL(triggered()), this, SLOT(toggleShowGregorianDates()));
 
     optionsMenu.addActions(QList<QAction*>() << a_showGregorian);
@@ -141,19 +141,19 @@ void CalendarDialog::setTodayText(const QString& style)
 void CalendarDialog::loadSettings()
 {
     QSettings sets(qApp->organizationName(), qApp->applicationName());
-    m_widCal->settings.showGregorianDates = sets.value("showgregorian", true).toBool();
+    ui->widCal->settings.showGregorianDates = sets.value("showgregorian", true).toBool();
 }
 
 void CalendarDialog::saveSettings()
 {
     QSettings sets(qApp->organizationName(), qApp->applicationName());
-    sets.setValue("showgregorian", m_widCal->settings.showGregorianDates);
+    sets.setValue("showgregorian", ui->widCal->settings.showGregorianDates);
 }
 
 void CalendarDialog::toggleShowGregorianDates()
 {
-    m_widCal->settings.showGregorianDates = !m_widCal->settings.showGregorianDates;
-    m_widCal->calculateDrawMonthUpdate();
+    ui->widCal->settings.showGregorianDates = !ui->widCal->settings.showGregorianDates;
+    ui->widCal->calculateDrawMonthUpdate();
 }
 
 void CalendarDialog::showAbout()

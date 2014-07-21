@@ -22,8 +22,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QDialog>
 
 class QTimer;
-
-class CalendarWidget;
 namespace Ui { class CalendarDialog; }
 
 class CalendarDialog : public QDialog
@@ -54,7 +52,6 @@ private slots:
 
 private:
     Ui::CalendarDialog *ui;
-    CalendarWidget* m_widCal;
 
     QTimer* m_emphTimer;
     enum { EmphTimerInterval = 300 };

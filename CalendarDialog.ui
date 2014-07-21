@@ -91,7 +91,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="widCalendarWidget" native="true"/>
+    <widget class="CalendarWidget" name="widCal" native="true"/>
    </item>
    <item>
     <widget class="QWidget" name="widButtons" native="true">
@@ -164,6 +164,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CalendarWidget</class>
+   <extends>QWidget</extends>
+   <header>CalendarWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="PersianCalendarResources.qrc"/>
  </resources>

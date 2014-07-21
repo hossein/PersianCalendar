@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ******************************************************************************/
 
 #pragma once
+#include <QDebug>
 #include <QString>
 
 //Avoid to...Double function being searched as to...do by me!
