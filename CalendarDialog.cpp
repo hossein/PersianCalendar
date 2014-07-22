@@ -41,12 +41,6 @@ CalendarDialog::CalendarDialog(QWidget *parent) :
     this->setWindowFlags(this->windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
     setWindowModality(Qt::WindowModal); //This dialog shouldn't be modal at all, this is for fun only!
 
-    //Promoted in UI designer
-    //int indexToInsert = ui->vlMain->indexOf(ui->widCalendarWidget);
-    //ui->vlMain->removeWidget(ui->widCalendarWidget);
-    //ui->widCal = new CalendarWidget(this);
-    //ui->vlMain->insertWidget(indexToInsert, ui->widCal, 1);
-
     QFont calFont = this->font();
     calFont.setPointSize(calFont.pointSize() * 4 / 3);
     ui->widCal->setFont(calFont);

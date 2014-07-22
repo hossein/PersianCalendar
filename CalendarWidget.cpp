@@ -105,7 +105,8 @@ void CalendarWidget::mouseReleaseEvent(QMouseEvent* event)
         return;
 
     QPoint pos = this->mapToGlobal(event->pos());
-    QString gregDate = QDateTime::fromMSecsSinceEpoch(datestamps[hPos][vPos]).date().toString();
+    QString gregDate = QDateTime::fromMSecsSinceEpoch(datestamps[hPos][vPos])
+            .date().toString("dddd d MMMM yyyy");
     QToolTip::showText(pos, gregDate, 0, this->rect());
 }
 
