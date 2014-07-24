@@ -80,6 +80,9 @@ void CalendarDialog::on_lblTodayDate_linkActivated(const QString& link)
 
 void CalendarDialog::on_btnDropOptions_clicked()
 {
+    ui->btnDropOptions->setCheckable(true);
+    ui->btnDropOptions->setChecked(true);
+
     QMenu optionsMenu("Options");
 
     QAction* a_showGregorian = new QAction(u("نمایش تاریخ میلادی"), &optionsMenu);
@@ -93,6 +96,10 @@ void CalendarDialog::on_btnDropOptions_clicked()
 
     QPoint pos = ui->btnDropOptions->mapToGlobal(ui->btnDropOptions->rect().bottomLeft());
     optionsMenu.exec(pos);
+
+    //Menu executing is synchronous, i.e the exec call above blocks.
+    ui->btnDropOptions->setChecked(false);
+    ui->btnDropOptions->setCheckable(false);
 }
 
 void CalendarDialog::monthChanged(int active_j_y, int active_j_m)
