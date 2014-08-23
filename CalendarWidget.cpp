@@ -154,7 +154,11 @@ void CalendarWidget::calculateAndDrawMonth(int j_y, int j_m, int j_d)
 
     QDate firstDayOfJalaliMonth;
     Ct::Date::PersianDate::JalaliToGregorian(firstDayOfJalaliMonth, j_y, j_m, 1);
-    QDateTime dateStamp(firstDayOfJalaliMonth);
+
+    //Without the QTime of 12 P.M, we got problems on 26/27 Esfand 1391 = 16/17 March 2013:
+    //  Both shows the same date! This was on Win7. On WinXP it was on the same month at different
+    //  days and in linux I did not test.
+    QDateTime dateStamp(firstDayOfJalaliMonth, QTime(12, 0, 0));
 
     int hPos = 0;
     int vPos = 2;
