@@ -159,29 +159,38 @@ void CalendarDialog::toggleShowGregorianDates()
 
 void CalendarDialog::showAbout()
 {
-    QMessageBox::information(this, u("درباره"),
-     u("<strong>روزشمار پارسی</strong>"
+    QMessageBox msgBox(this);
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.setWindowTitle(u("درباره"));
+
+    msgBox.setText(u(
+       "<strong>روزشمار پارسی</strong>"
        "<br/>نگارش 1‌/‌1"
        "<br/>ساخته‌ی <span style=\"font-family: Tahoma, sans-serif; font-size: 12pt\">"
-       "<a href=\"mailto:mhazadmanesh2009@gmail.com\">mhazadmanesh2009@gmail.com</a>"
-       "</span>"
+       "<a href=\"mailto:mhazadmanesh2009@gmail.com\">mhazadmanesh2009@gmail.com</a></span>"
+       "<br/>برای نمایش لیسانس برنامه، روی "
+       "<span style=\"font-family: Tahoma, sans-serif; font-size: 12pt\">Show Details"
+       "</span> کلیک کنید."));
 
-       "<div dir=\"ltr\" style=\"font-family: Tahoma, sans-serif; font-size: 10pt\"><br/>"
-       "Persian Calendar, simple Persian calendar<br/>"
-       "Copyright (C) 2014 mhazadmanesh2009@gmail.com<br/>"
-       "<br/>"
-       "This program is free software: you can redistribute it and/or modify<br/>"
-       "it under the terms of the GNU General Public License as published by<br/>"
-       "the Free Software Foundation, either version 3 of the License, or<br/>"
-       "(at your option) any later version.<br/>"
-       "<br/>"
-       "This program is distributed in the hope that it will be useful,<br/>"
-       "but WITHOUT ANY WARRANTY; without even the implied warranty of<br/>"
-       "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<br/>"
-       "GNU General Public License for more details.<br/>"
-       "<br/>"
-       "You should have received a copy of the GNU General Public License"
-       "along with this program.  If not, see <a href=\"http://www.gnu.org/licenses/\">"
-       "http://www.gnu.org/licenses/</a>."
-       "<br/></div>"));
+    msgBox.setDetailedText(u(
+       "Copyright (C) 2014 mhazadmanesh2009@gmail.com\n"
+       "\n"
+       "This program is free software: you can redistribute it and/or modify "
+       "it under the terms of the GNU General Public License as published by "
+       "the Free Software Foundation, either version 3 of the License, or "
+       "(at your option) any later version.\n"
+       "\n"
+       "This program is distributed in the hope that it will be useful, "
+       "but WITHOUT ANY WARRANTY; without even the implied warranty of "
+       "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the "
+       "GNU General Public License for more details.\n"
+       "\n"
+       "You should have received a copy of the GNU General Public License "
+       "along with this program.  If not, see <http://www.gnu.org/licenses>."));
+
+    msgBox.setStyleSheet("QTextEdit { font-family: Tahoma, sans-serif; font-size: 10pt; }"
+                         "QPushButton { font-family: Tahoma, sans-serif; font-size: 12pt; "
+                         "              font-weight: bold; padding: 10px; }");
+
+    msgBox.exec();
 }
